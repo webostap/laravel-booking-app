@@ -82,6 +82,7 @@
 
 		<script type="text/javascript">
 
+			var specialDays = {!! $formDate['specialDays'] !!};
 			var freeDays = {!! $formDate['freeDays'] !!};
 			var freeDates = {!! $formDate['freeDates'] !!}
 			

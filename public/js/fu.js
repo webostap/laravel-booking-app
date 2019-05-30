@@ -83,22 +83,3 @@ function xhr (request, paramsObj, cb) {
   }
 
 }
-
-
-function xhr2 (request, paramsObj, cb) {
-
-  let xhr = new XMLHttpRequest();
-
-  xhr.open('POST', request);
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.setRequestHeader("X-CSRF-Token", paramsObj['token']);
-  xhr.send(JSON.stringify(paramsObj));
-
-  xhr.onreadystatechange = function () {
-	if (this.readyState === 4)
-		if (this.status == 200 && this.status < 300)
-            if( typeof cb === 'function' )
-                cb(xhr.responseText);
-  }
-
-}

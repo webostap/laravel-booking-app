@@ -27,8 +27,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		setDefaultDate: true,
 		format: "yyyy-mm-dd",
 		disableDayFn: function (d) {
-			let weekDay = d.getDay() ? d.getDay() : 7;
-			return (freeDays.includes(weekDay) || freeDates.includes(d.yyyymmdd('-')));
+			if (specialDays.includes(d.yyyymmdd('-'))) {
+				return freeDates.includes(d.yyyymmdd('-'));
+			}
+			else {
+				let weekDay = d.getDay() ? d.getDay() : 7;
+				return (freeDays.includes(weekDay));
+			}
 		}
 	};
 

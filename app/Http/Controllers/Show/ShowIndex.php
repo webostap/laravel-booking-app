@@ -10,26 +10,21 @@ class ShowIndex extends Controller
     public function __invoke()
     {
 
-    	$tableTypes = \App\TableType::all();
-    	$weekDays = \App\WeekDay::all();
-    	$SpecialDays = \App\SpecialDay::where('date', '>', date("Y-m-d"));
+        $tableTypes = \App\TableType::all();
+        $weekDays = \App\WeekDay::all();
+        $specialDaysQ = \App\SpecialDay::whereDate('date', '>', date("Y-m-d"))->get();
 
-    	$freeDays = $weekDays->where('day_off', 1)->pluck('id');
-    	$freeDates = $SpecialDays->where('day_off', 1)->pluck('date');
+        $freeDates = $specialDaysQ->where('day_off', 1)->pluck('date');
+        $freeDays = $weekDays->where('day_off', 1)->pluck('id');
+        $specialDays = $specialDaysQ->pluck('date');
+        
+        $formDate = [
+            'tableTypes' => $tableTypes,
+            'freeDays' => $freeDays,
+            'freeDates' => $freeDates,
+            'specialDays' => $specialDays
+        ];
 
-    	$timeInterval = [
-    		min($weekDays->where('day_off', NULL)->min('stamp_beg'), $weekDays->where('day_off', NULL)->min('stamp_beg')),
-    		max($weekDays->where('day_off', NULL)->max('stamp_end'), $weekDays->where('day_off', NULL)->max('stamp_end'))
-
-    	];
-    	
-    	$formDate = [
-    		'tableTypes' => $tableTypes,
-    		'freeDays' => $freeDays,
-    		'freeDates' => $freeDates,
-    		'timeInterval' => $timeInterval
-    	];
-
-		return view('form', compact('formDate'));
+        return view('form', compact('formDate'));
     }
 }

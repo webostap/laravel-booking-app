@@ -31,7 +31,7 @@ class Time {
 			child = this.node.lastElementChild; 
 		}
 
-		console.log(arStamps);
+		// console.log(arStamps);
 		if(!arStamps) {
 			this.node.disabled = true;
 			this.node.firstElementChild.selected = true;
@@ -81,5 +81,37 @@ function xhr (request, paramsObj, cb) {
             if( typeof cb === 'function' )
                 cb(JSON.parse(xhr.responseText));
   }
+}
 
+class XHRDatePicker {
+	constructor(pickerNodes, pickerParams, time) {
+		this.pickerNodes = pickerNodes;
+		this.pickerParams = pickerParams;
+		this.time = time;
+	}
+
+	init() {
+		var self = this;
+		var time = this.time;
+		let loadObj = {
+	     	table_size: this.pickerNodes.table.value,
+	     	duration: this.pickerNodes.duration.value,
+	     	date: this.pickerNodes.datepicker.value,
+	     	token: this.pickerNodes.token.value 
+	     };
+	     xhr('/date/', loadObj, function(response) {
+			self.time.Update(response.stamps);
+
+			self.pickerParams.defaultDate = new Date(response.date);
+		  	self.pickerParams.onSelect = function (d) {
+				loadObj.date = d.yyyymmdd('-');
+				xhr('/time/', loadObj, function(stamps) {
+					if (loadObj.table_size && loadObj.duration) {
+						self.time.Update(stamps);
+				     }
+			     });
+			};
+			return M.Datepicker.init(self.pickerNodes.datepicker, self.pickerParams);
+		});	
+	}
 }

@@ -1,25 +1,30 @@
 document.addEventListener('DOMContentLoaded', function() {
 
 	var form = document.getElementById('form');
-	var result = document.getElementById('result');
 	var submit = form.querySelector('#submit');
-	var token = form.querySelector('input[name=_token]');
 	var name = form.querySelector('#name');
 	var phone = form.querySelector('#phone');
-
+	var token = form.querySelector('input[name=_token]');
 	var successContent = document.getElementById('success');
 
-    var selects = form.querySelectorAll('select');
-    var selectI = M.FormSelect.init(selects);
-
-    var time = new Time(selects[2]);
-
-    var formattedPhone = new Formatter(phone, {
+	var formattedPhone = new Formatter(phone, {
 	  'pattern': '+7({{999}}) {{999}} {{99}} {{99}}',
 	  'persistent': true
 	});
 
+    var selects = form.querySelectorAll('select');
+    var selectI = M.FormSelect.init(selects);
+    var time = new Time(selects[2]);
+
     var datepicker = form.querySelector('.datepicker');
+
+	var pickerNodes = {
+		token: token,
+     	table: selects[0],
+     	duration: selects[1],
+     	datepicker: datepicker
+	};
+
     var pickerParams = {
     	i18n: i18nTimesRus,
 		firstDay: 1,
@@ -38,81 +43,35 @@ document.addEventListener('DOMContentLoaded', function() {
 	};
 
     var datepickerI = M.Datepicker.init(datepicker, pickerParams);
+	var xhrDatePicker = new XHRDatePicker(pickerNodes, pickerParams, time);
 
-    var loadObj;
 
-    if (!selects[0].value || !selects[1].value) 
-    	time.disable();
+/////////////////////////////////////////////////////////////////////////////////
 
-    // if (selects[0].value && selects[1].value) {
-    else {
 
-    	loadObj = {
-	     	table_size:selects[0].value,
-	     	duration: selects[1].value,
-	     	date: datepicker.value,
-	     	token: token.value 
-	     }
+    if (selects[0].value && selects[1].value) 
+    	datepickerI = xhrDatePicker.init();
 
-		xhr('/date/', loadObj, function(response) {
-			time.Update(response.stamps);
-			console.log(response.date);
+    else time.disable();
 
-			pickerParams.defaultDate = new Date(response.date);
-		  	pickerParams.onSelect = function (d) {
-				loadObj.date = d.yyyymmdd('-');
-				xhr('/time/', loadObj, function(stamps) {
-					if (selects[0].value && selects[1].value) {
-						time.Update(stamps);
-				     	console.log(stamps);
-				     }
-			     });
-			};
-			datepickerI = M.Datepicker.init(datepicker, pickerParams);
-
-		});
-		
-    }
 
 	for (let i = 0; i < 2; i++) {
 	  selects[i].onchange = function() {
 
+	  	if (selects[0].value && selects[1].value) 
+	    	datepickerI = xhrDatePicker.init();
 
-	  	if (!(selects[0].value && selects[1].value))
-	  		time.disable();
+	    else time.disable();
 
-	  	else {
-
-	  		loadObj = {
-		     	table_size: selects[0].value,
-		     	duration: selects[1].value,
-		     	date: datepicker.value,
-		     	token: token.value 
-		     }
-
-
-	  		xhr('/date/', loadObj, function(response) {
-				time.Update(response.stamps);
-				console.log(response.date);
-
-				pickerParams.defaultDate = new Date(response.date);
-			  	pickerParams.onSelect = function (d) {
-					loadObj.date = d.yyyymmdd('-');
-					xhr('/time/', loadObj, function(stamps) {
-						if (selects[0].value && selects[1].value) {
-							time.Update(stamps);
-					     	console.log(stamps);
-					     }
-				     });
-				};
-				datepickerI = M.Datepicker.init(datepicker, pickerParams);
-			});
-	 	}
 	  }
 	}
 
+///////////////////////////////////////////////////////////////////////////////////
+
+
 	submit.onclick = function (e) {
 		e.preventDefault();
+
 		loadObj = {
 	     	name: name.value,
 	     	phone: phone.value,
@@ -122,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	     	date: datepicker.value,
 	     	token: token.value 
 	   	 };
+
 		xhr('/submit/', loadObj, function(response) {
 
 	     	if(response==3) {
@@ -129,24 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	     	}
 	     	else if(response==2) {
 	     		M.toast({html: 'К сожалению, в это время мест нет<br>Но мы обновили данные специально для вас<br>Пожалуйста, выберете заново'});
-
-	     		xhr('/date/', loadObj, function(response) {
-					time.Update(response.stamps);
-					console.log(response.date);
-
-					pickerParams.defaultDate = new Date(response.date);
-				  	pickerParams.onSelect = function (d) {
-						loadObj.date = d.yyyymmdd('-');
-						xhr('/time/', loadObj, function(stamps) {
-							if (selects[0].value && selects[1].value) {
-								time.Update(stamps);
-						     	console.log(stamps);
-						     }
-					     });
-					};
-					datepickerI = M.Datepicker.init(datepicker, pickerParams);
-
-				});
+	     		datepickerI = xhrDatePicker.init();
 	     	}
 	     	else if(response==1) {
 	     		form.classList.add('out');

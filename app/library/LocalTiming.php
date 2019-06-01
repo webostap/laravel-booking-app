@@ -72,22 +72,17 @@ class LocalTiming
 		return $stamp_beg >= $dateStamps[0] && $stamp_end <= $dateStamps[1];
 	}
 
-	public static function getClosedStampsByTable($date, $table_size)
+	public static function getDateClosedStamps($date, $table_size)
 	{
-		$tables = \App\RestTable::where('size', $table_size)
-            ->get(['id'])->pluck('id');
+        $tableType = \App\TableType::where('size', $table_size)->firstOrFail();
 
-        $matches = [
-            ['confrimed', 1],
-            ['date', $date],
-            ['table_size', $table_size]
-        ];
+        $tables = $tableType->tables()->get(['id'])->pluck('id');
 
-
-        $reserves = \App\Reserve::where($matches)->
-            get(['table_id', 'stamp_beg', 'stamp_end'])
+        $reserves = $tableType->reserves()
+            ->where('confrimed', 1)
+            ->whereDate('date', $date)
+            ->get(['table_id', 'stamp_beg', 'stamp_end'])
             ->toArray();
-
 
         $reservedStamps = [];
         $crossedStamps = [];
@@ -95,8 +90,8 @@ class LocalTiming
 
         if ($tables->count() == 1) {
         	foreach ($reserves as $tableReserve) {
-	            for ($i=$tableReserve['stamp_beg']; $i < $tableReserve['stamp_end']; $i++) {
-	                $reservedStamps[] = $i;
+	            for ($stamp=$tableReserve['stamp_beg']; $stamp < $tableReserve['stamp_end']; $stamp++) {
+	                $reservedStamps[] = $stamp;
 	            }
 	        }
 	        return $reservedStamps;
@@ -104,14 +99,16 @@ class LocalTiming
 
 
         foreach ($reserves as $tableReserve) {
-            for ($i=$tableReserve['stamp_beg']; $i < $tableReserve['stamp_end']; $i++) {
-                if (in_array($i,$reservedStamps)) {
-                    if (isset($crossedStamps[$i])) {
-                        $crossedStamps[$i]++;
+            for ($stamp=$tableReserve['stamp_beg']; $stamp < $tableReserve['stamp_end']; $stamp++) {
+
+                if (in_array($stamp,$reservedStamps)) {
+                    if (isset($crossedStamps[$stamp])) {
+                        $crossedStamps[$stamp]++;
                     }
-                    else $crossedStamps[$i] = 2;
+                    else $crossedStamps[$stamp] = 2;
                 }
-                $reservedStamps[] = $i;
+                $reservedStamps[] = $stamp;
+
             }
         }
 
@@ -128,7 +125,7 @@ class LocalTiming
 
         $dateStamps = SELF::getDateStamps($date);
         if(!$dateStamps) return [];
-        $closedStamps = SELF::getClosedStampsByTable($date, $table_size);
+        $closedStamps = SELF::getDateClosedStamps($date, $table_size);
         $openStamps = [];
 
 
@@ -152,8 +149,6 @@ class LocalTiming
 		date_default_timezone_set('Asia/Vladivostok');
 		$date = date('Y-m-d');
 
-		// При поиске ближайшей доступной даты, сначала проверяем текущую выбранную и если она недоступна, то начинаем поиск с сегодняшней даты
-
 		if ($start_date) $date = $start_date > $date ? $start_date : $date;
 
         $openStamps = [];
@@ -176,7 +171,7 @@ class LocalTiming
         	$date = date('Y-m-d', strtotime($date. ' + 1 days'));
 		}
 
-        return false;
+        return false; //Тут может быть предупреждение, что в ближайшие пол года мест нет
 
 	}
 

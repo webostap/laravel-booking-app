@@ -12,4 +12,8 @@ class TableType extends Model
     {
         return $this->hasMany('App\RestTable', 'size', 'size');
     }
+    public function reserves()
+    {
+        return $this->hasMany('App\Reserve', 'table_size', 'size');
+    }
 }

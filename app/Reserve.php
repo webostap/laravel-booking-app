@@ -14,6 +14,11 @@ class Reserve extends Model
         return $this->belongsTo('App\RestTable', 'table_id');
     }
 
+    public function tableType()
+    {
+        return $this->belongsTo('App\TableType', 'table_size', 'size');
+    }
+
     public static function Ask (array $arParams) {
 
         if (\App\RestTable::checkFree($arParams)) {

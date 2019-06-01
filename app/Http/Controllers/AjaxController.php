@@ -50,9 +50,6 @@ class AjaxController extends Controller
 
         if ($v->fails())
             return 3;
-            // return $v->errors();
-
-
 
         $arParams = [
             'name'       => $request->name,

@@ -242,16 +242,16 @@
         },
         {
             "name": "kylekatarnls/update-helper",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kylekatarnls/update-helper.git",
-                "reference": "1a03c660c4384255b19a8c290495acd176b80bd6"
+                "reference": "fbfa94c0f196d4718ce3c1032e9c4b34140e69d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kylekatarnls/update-helper/zipball/1a03c660c4384255b19a8c290495acd176b80bd6",
-                "reference": "1a03c660c4384255b19a8c290495acd176b80bd6",
+                "url": "https://api.github.com/repos/kylekatarnls/update-helper/zipball/fbfa94c0f196d4718ce3c1032e9c4b34140e69d3",
+                "reference": "fbfa94c0f196d4718ce3c1032e9c4b34140e69d3",
                 "shasum": ""
             },
             "require": {
@@ -283,7 +283,7 @@
                 }
             ],
             "description": "Update helper",
-            "time": "2019-05-26T09:57:51+00:00"
+            "time": "2019-05-30T21:26:08+00:00"
         },
         {
             "name": "laravel/framework",
@@ -685,20 +685,20 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "1.38.0",
+            "version": "1.38.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "7f11e8fecef08b74f1cdf93f3e001389c911d5cc"
+                "reference": "7621621f76c99f01318313f576baea22edd86367"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/7f11e8fecef08b74f1cdf93f3e001389c911d5cc",
-                "reference": "7f11e8fecef08b74f1cdf93f3e001389c911d5cc",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/7621621f76c99f01318313f576baea22edd86367",
+                "reference": "7621621f76c99f01318313f576baea22edd86367",
                 "shasum": ""
             },
             "require": {
-                "kylekatarnls/update-helper": "^1.0",
+                "kylekatarnls/update-helper": "^1.1",
                 "php": ">=5.3.9",
                 "symfony/translation": "~2.6 || ~3.0 || ~4.0"
             },
@@ -742,7 +742,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2019-05-30T08:57:38+00:00"
+            "time": "2019-05-30T22:56:55+00:00"
         },
         {
             "name": "nikic/php-parser",

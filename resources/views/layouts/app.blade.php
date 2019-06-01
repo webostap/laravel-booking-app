@@ -45,10 +45,10 @@
 
   <nav class="cyan teal">
     <div class="nav-wrapper container">
-      <a href="/" class="brand-logo hide-on-med-and-down">Home</a>
+      <a href="{{ URL::to('/') }}" class="brand-logo hide-on-med-and-down">Home</a>
       <ul id="nav-mobile" class="right ">
-        <li><a href="/admin">Заказы</a></li>
-        <li><a href="/admin/edit">Настройка</a></li>
+        <li><a href="{{ URL::to('/admin') }}">Заказы</a></li>
+        <li><a href="{{ URL::to('/admin/edit') }}">Настройка</a></li>
         <li>
             <a href="{{ route('logout') }}"
                 onclick="event.preventDefault();

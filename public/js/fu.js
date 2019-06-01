@@ -101,14 +101,14 @@ class XHRDatePicker {
 	     	token: this.pickerNodes.token.value 
 	     };
 
-	     xhr('/date/', loadObj, function(response) {
+	     xhr(base_dir+'/date', loadObj, function(response) {
 			self.time.Update(response.stamps);
 
 			self.pickerParams.defaultDate = new Date(response.date);
 		  	self.pickerParams.onSelect = function (d) {
 		  		if (self.pickerNodes.table.value && self.pickerNodes.duration.value) {
 					loadObj.date = d.yyyymmdd('-');
-					xhr('/time/', loadObj, function(stamps) {
+					xhr(base_dir+'/time', loadObj, function(stamps) {
 						self.time.Update(stamps);
 				     });
 				}

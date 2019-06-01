@@ -10,7 +10,7 @@
 
 	<li class="collection-item">
 		<div class="flex-center">
-			<form class="inline-form" method="POST" action="/admin/edit/weekday/{{ $weekDay->id }}" >
+			<form class="inline-form" method="POST" action="{{ URL::to('/admin/edit/weekday/') }}/{{ $weekDay->id }}" >
 				{{ csrf_field() }}{{ method_field('PUT') }}
 
 				<p style="width: 20px">{{ $weekDay->name }}</p>
@@ -63,7 +63,7 @@
 
 	<li class="collection-item">
 		<div class="flex-center">
-			<form class="inline-form" method="POST" action="/admin/edit/specialday/{{ $specialDay->id }}" >
+			<form class="inline-form" method="POST" action="{{ URL::to('/admin/edit/specialday/') }}/{{ $specialDay->id }}" >
 				{{ csrf_field() }}{{ method_field('PUT') }}
 
 				<input type="date" name="date" value="{{ $specialDay->date }}">
@@ -100,7 +100,7 @@
 
 			</form>
 
-			<form class="secondary-content" method="POST" action="/admin/edit/specialday/{{ $specialDay->id }}" >
+			<form class="secondary-content" method="POST" action="{{ URL::to('/admin/edit/specialday/') }}/{{ $specialDay->id }}" >
 				{{ csrf_field() }}{{ method_field('DELETE') }}
 				<input type="submit" class="red lighten-1 btn" value="X" title="удалить">
 			</form>
@@ -112,7 +112,7 @@
 @endforeach
 	<li class="collection-item">
 		<div class="flex-center">
-			<form class="inline-form" method="POST" action="/admin/edit/specialday/" >
+			<form class="inline-form" method="POST" action="{{ URL::to('/admin/edit/specialday/') }}" >
 				{{ csrf_field() }}
 
 				<input type="date" name="date">
@@ -167,7 +167,7 @@
           <td><b>{{ $table->id }}</b></td>
           <td>{{ $table->type->name }}</td>
           <td>({{ $table->size }})</td>
-          <td><form method="POST" action="/admin/edit/tables/{{ $table->id }}" >
+          <td><form method="POST" action="{{ URL::to('/admin/edit/tables/') }}/{{ $table->id }}" >
           	{{ csrf_field() }}{{ method_field('DELETE') }}
           	<input type="submit" class="btn btn-small btn-floating red lighten-1" value="x" title="удалить">
           </form></td>
@@ -178,7 +178,7 @@
 
 	<li class="collection-item">
 		<div class="flex-center">
-			<form class="inline-form" method="POST" action="/admin/edit/tables/" >
+			<form class="inline-form" method="POST" action="{{ URL::to('/admin/edit/tables/') }}" >
 				{{ csrf_field() }}
 
 				<select name="size" class="browser-default">

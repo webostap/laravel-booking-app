@@ -35,7 +35,7 @@
 
 			<td>
     		@if (!$reserve->confrimed)
-    		<form method="POST" action="/admin/edit/reserves/{{ $reserve->id }}" >
+    		<form method="POST" action="{{ URL::to('/admin/edit/reserves/') }}/{{ $reserve->id }}" >
             	{{ csrf_field() }}{{ method_field('PUT') }}
             	<input type="submit" class="btn btn-small" value="Подтвердить">
             </form>
@@ -44,7 +44,7 @@
     		@endif
     		</td>
 
-            <td><form method="POST" action="/admin/edit/reserves/{{ $reserve->id }}" >
+            <td><form method="POST" action="{{ URL::to('/admin/edit/reserves/') }}/{{ $reserve->id }}" >
             	{{ csrf_field() }}{{ method_field('DELETE') }}
             	<input type="submit" class="btn btn-floating red lighten-1" value="X">
             </form></td>

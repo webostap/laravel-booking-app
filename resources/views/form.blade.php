@@ -4,6 +4,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 		<link rel="stylesheet" href="{{ URL::asset('css/style.css') }}">
+		<style type="text/css">body{background-image: url({{ URL::asset('images/invalid-name.jpg') }});}</style>
 		<title></title>
 	</head>
 	<body>
@@ -75,17 +76,19 @@
 		      <p>Для подтверждения брони Вам позвонит администратор<br> по указанному В Вами номеру</p>
 		    </div>
 		</div>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-		<script src="{{ URL::asset('js/i18nTimesRus.js') }}"></script>
-		<script src="{{ URL::asset('js/formatter.min.js') }}"></script>
-		<script src="{{ URL::asset('js/fu.js') }}"></script>
+	</div>
 
-		<script type="text/javascript">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<script src="{{ URL::asset('js/i18nTimesRus.js') }}"></script>
+	<script src="{{ URL::asset('js/formatter.min.js') }}"></script>
 
-			var specialDays = {!! $formDate['specialDays'] !!};
-			var freeDays = {!! $formDate['freeDays'] !!};
-			var freeDates = {!! $formDate['freeDates'] !!}
-			
-		</script>
-		<script src="{{ URL::asset('js/main.js') }}"></script>
-	</body></html>
+	<script type="text/javascript">
+		var base_dir = '{{ URL::to('/') }}';
+		var specialDays = {!! $formDate['specialDays'] !!};
+		var freeDays = {!! $formDate['freeDays'] !!};
+		var freeDates = {!! $formDate['freeDates'] !!}
+	</script>
+	
+	<script src="{{ URL::asset('js/fu.js') }}"></script>
+	<script src="{{ URL::asset('js/main.js') }}"></script>
+</body></html>

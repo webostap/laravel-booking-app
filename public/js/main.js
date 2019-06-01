@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
             token: token.value
         };
 
-        xhr('/submit/', loadObj, function(response) {
+        xhr(base_dir+'/submit', loadObj, function(response) {
 
             if (response == 3) {
                 M.toast({

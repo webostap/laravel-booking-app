@@ -90,7 +90,7 @@ class LocalTiming
 
         if ($tables->count() == 1) {
         	foreach ($reserves as $tableReserve) {
-	            for ($stamp=$tableReserve['stamp_beg']; $stamp < $tableReserve['stamp_end']; $stamp++) {
+	            for ($stamp = $tableReserve['stamp_beg']; $stamp < $tableReserve['stamp_end']; $stamp++) {
 	                $reservedStamps[] = $stamp;
 	            }
 	        }
@@ -99,15 +99,15 @@ class LocalTiming
 
 
         foreach ($reserves as $tableReserve) {
-            for ($stamp=$tableReserve['stamp_beg']; $stamp < $tableReserve['stamp_end']; $stamp++) {
+            for ($stamp = $tableReserve['stamp_beg']; $stamp < $tableReserve['stamp_end']; $stamp++) {
 
-                if (in_array($stamp,$reservedStamps)) {
-                    if (isset($crossedStamps[$stamp])) {
+                if ( in_array($stamp, $reservedStamps) ) {
+                    if ( isset($crossedStamps[$stamp]) ) {
                         $crossedStamps[$stamp]++;
                     }
                     else $crossedStamps[$stamp] = 2;
                 }
-                $reservedStamps[] = $stamp;
+                else $reservedStamps[] = $stamp;
 
             }
         }

@@ -93,23 +93,25 @@ class XHRDatePicker {
 	init() {
 		var self = this;
 		var time = this.time;
+		
 		let loadObj = {
 	     	table_size: this.pickerNodes.table.value,
 	     	duration: this.pickerNodes.duration.value,
 	     	date: this.pickerNodes.datepicker.value,
 	     	token: this.pickerNodes.token.value 
 	     };
+
 	     xhr('/date/', loadObj, function(response) {
 			self.time.Update(response.stamps);
 
 			self.pickerParams.defaultDate = new Date(response.date);
 		  	self.pickerParams.onSelect = function (d) {
-				loadObj.date = d.yyyymmdd('-');
-				xhr('/time/', loadObj, function(stamps) {
-					if (loadObj.table_size && loadObj.duration) {
+		  		if (self.pickerNodes.table.value && self.pickerNodes.duration.value) {
+					loadObj.date = d.yyyymmdd('-');
+					xhr('/time/', loadObj, function(stamps) {
 						self.time.Update(stamps);
-				     }
-			     });
+				     });
+				}
 			};
 			return M.Datepicker.init(self.pickerNodes.datepicker, self.pickerParams);
 		});	

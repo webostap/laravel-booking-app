@@ -64,7 +64,7 @@
 						</select>
 					</div>
 				</div>
-				<a href="" id="submit" class="booking-button waves-effect waves-light ">Забронировать</a>
+				<button type="submit" id="submit" class="booking-button waves-effect waves-light ">Забронировать</button>
 			<div id="result"></div>
 
 		    {{ csrf_field() }}
@@ -81,14 +81,20 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 	<script src="{{ URL::asset('js/i18nTimesRus.js') }}"></script>
 	<script src="{{ URL::asset('js/formatter.min.js') }}"></script>
+	<script src="{{ URL::asset('js/fu.js') }}"></script>
+	<script src="{{ URL::asset('js/form.js') }}"></script>
 
 	<script type="text/javascript">
 		var base_dir = '{{ URL::to('/') }}';
-		var specialDays = {!! $formDate['specialDays'] !!};
-		var freeDays = {!! $formDate['freeDays'] !!};
-		var freeDates = {!! $formDate['freeDates'] !!}
+
+		var arDates = {
+			specialDays:{!! $formDate['specialDays']!!},
+			freeDays: 	{!! $formDate['freeDays'] 	!!},
+			freeDates: 	{!! $formDate['freeDates'] 	!!}
+		};
+		document.addEventListener('DOMContentLoaded', function() {
+		    bookingForm = new BookingForm('form', 'success', arDates);
+		});
+
 	</script>
-	
-	<script src="{{ URL::asset('js/fu.js') }}"></script>
-	<script src="{{ URL::asset('js/main.js') }}"></script>
 </body></html>

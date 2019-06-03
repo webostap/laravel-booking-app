@@ -31,7 +31,6 @@ class Time {
 			child = this.node.lastElementChild; 
 		}
 
-		// console.log(arStamps);
 		if(!arStamps) {
 			this.node.disabled = true;
 			this.node.firstElementChild.selected = true;
@@ -55,6 +54,9 @@ class Time {
 	}
 }
 
+Date.prototype.getDay7 = function() {
+	return this.getDay() ? this.getDay() : 7;
+};
 Date.prototype.yyyymmdd = function(div = '-') {
   var mm = this.getMonth() + 1;
   var dd = this.getDate();
@@ -64,11 +66,23 @@ Date.prototype.yyyymmdd = function(div = '-') {
           (dd>9 ? '' : '0') + dd
          ].join(div);
 };
+function prettyDate(str) {
+	var now = new Date();
+    var today = new Date(now.yyyymmdd('-'));
+    var selectedDate = new Date(str);
+	if(today.valueOf()==selectedDate.valueOf()) {
+	    return 'Сегодня ('+selectedDate.getDate()+' '+i18nTimesRus.monthsCase[selectedDate.getMonth()]+')';
+	}
+	else {
+	    return i18nTimesRus.weekdays[selectedDate.getDay7()-1]+' ('+selectedDate.getDate()+' '+i18nTimesRus.monthsCase[selectedDate.getMonth()]+')';
+	}
+};
+
 
 
 function xhr (request, paramsObj, cb) {
 
-  let xhr = new XMLHttpRequest();
+  var xhr = new XMLHttpRequest();
 
   xhr.open('POST', request);
   xhr.setRequestHeader("Content-Type", "application/json");
@@ -81,39 +95,4 @@ function xhr (request, paramsObj, cb) {
             if( typeof cb === 'function' )
                 cb(JSON.parse(xhr.responseText));
   }
-}
-
-class XHRDatePicker {
-	constructor(pickerNodes, pickerParams, time) {
-		this.pickerNodes = pickerNodes;
-		this.pickerParams = pickerParams;
-		this.time = time;
-	}
-
-	init() {
-		var self = this;
-		var time = this.time;
-		
-		let loadObj = {
-	     	table_size: this.pickerNodes.table.value,
-	     	duration: this.pickerNodes.duration.value,
-	     	date: this.pickerNodes.datepicker.value,
-	     	token: this.pickerNodes.token.value 
-	     };
-
-	     xhr(base_dir+'/date', loadObj, function(response) {
-			self.time.Update(response.stamps);
-
-			self.pickerParams.defaultDate = new Date(response.date);
-		  	self.pickerParams.onSelect = function (d) {
-		  		if (self.pickerNodes.table.value && self.pickerNodes.duration.value) {
-					loadObj.date = d.yyyymmdd('-');
-					xhr(base_dir+'/time', loadObj, function(stamps) {
-						self.time.Update(stamps);
-				     });
-				}
-			};
-			return M.Datepicker.init(self.pickerNodes.datepicker, self.pickerParams);
-		});	
-	}
 }

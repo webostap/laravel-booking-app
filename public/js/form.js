@@ -42,6 +42,7 @@ function BookingForm(formId, resId, arDates) {
                 dateLabel.classList.add('active');
 
                 if (selects[0].value && selects[1].value) {
+                    time.disable();
                     var loadObj = getLoadObj();
                     loadObj.date = datepicker.value
                     xhr(base_dir + '/time', loadObj, function(stamps) {
@@ -76,6 +77,7 @@ function BookingForm(formId, resId, arDates) {
         datepickerI.open();
     }
     sDate.onkeypress = function(e) {
+        e.preventDefault();
         if (e.keyCode === 13) {
             datepickerI.open();
         }
@@ -128,6 +130,8 @@ function BookingForm(formId, resId, arDates) {
     }
 
     function getNearDateStamps(strDate) {
+
+        time.disable();
 
         var loadObj = getLoadObj();
         loadObj.date = strDate;

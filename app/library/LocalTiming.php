@@ -28,11 +28,14 @@ class LocalTiming
 	public static function getDateStamps($date)
 	{
 		date_default_timezone_set('Asia/Vladivostok');
-		$today = false;
-		if (date('Y-m-d') == $date) {
-			$curr_stamp = SELF::stamp(date('H:i'));
-			$today = true;
-		}
+        $today = false;
+        $curr_time = date('H:i');
+        $null_time = date('H:i', strtotime(SELF::stampToStr(0)));
+
+        if ($curr_time >= $null_time && date('Y-m-d') == $date) {
+            $curr_stamp = SELF::stamp($curr_time);
+            $today = true;
+        }
 
 		$ret = [];
 
@@ -58,8 +61,8 @@ class LocalTiming
             	$ret[1] = $weekDay->stamp_end;
             }
         }
-        if ($today && $ret[0] < $curr_stamp) {
-            $ret[0] = $curr_stamp;
+        if ($today) {
+            $ret[0] = $curr_stamp > $ret[0] ? $curr_stamp : ret[0];
         }
         
         return $ret;

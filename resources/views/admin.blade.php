@@ -40,7 +40,7 @@
             	<input type="submit" class="btn btn-small" value="Подтвердить">
             </form>
             @else
-            {{ $reserve->table->id }}
+            {{ $reserve->table_id }}
     		@endif
     		</td>
 

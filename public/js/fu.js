@@ -80,7 +80,28 @@ function prettyDate(str) {
 
 
 
-function xhr (request, paramsObj, cb) {
+function xhrGET (request, paramsObj, cb) {
+
+  var xhr = new XMLHttpRequest();
+
+  var requestParams = '?';
+  for (let key in paramsObj) {
+  	requestParams+= key+'='+paramsObj[key]+'&';
+  }
+
+  xhr.open('GET', request+requestParams);
+  xhr.send();
+
+  xhr.onreadystatechange = function () {
+	if (this.readyState === 4)
+		if (this.status == 200 && this.status < 300)
+            if( typeof cb === 'function' )
+                cb(JSON.parse(xhr.responseText));
+  }
+}
+
+
+function xhrPOST (request, paramsObj, cb) {
 
   var xhr = new XMLHttpRequest();
 

@@ -14,8 +14,8 @@ use Illuminate\Http\Request;
 
 
 Route::get('/', 'Show\ShowIndex');
-Route::post('date', 'AjaxController@date');
-Route::post('time', 'AjaxController@time');
+Route::get('date', 'AjaxController@date');
+Route::get('time', 'AjaxController@time');
 Route::post('submit', 'AjaxController@submit');
 
 

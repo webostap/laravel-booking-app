@@ -42,12 +42,7 @@ function BookingForm(formId, resId, arDates) {
                 dateLabel.classList.add('active');
 
                 if (selects[0].value && selects[1].value) {
-                    time.disable();
-                    var loadObj = getLoadObj();
-                    loadObj.date = datepicker.value
-                    xhr(base_dir + '/time', loadObj, function(stamps) {
-                        time.Update(stamps);
-                    });
+                    getDateStamps();
                 }
             }
         }
@@ -110,33 +105,37 @@ function BookingForm(formId, resId, arDates) {
 
 
     function getLoadObj() {
-        var loadObj = {
+        return {
             table_size: selects[0].value,
             duration: selects[1].value,
-            stamp_beg: selects[2].value,
-            token: token.value
+            date: datepicker.value,
         };
-        return loadObj;
     }
 
     function getFormData() {
         var formData = getLoadObj();
-
-        formData.name = name.value;
+        
+        formData.stamp_beg = selects[2].value;
+        formData.name  =  name.value;
         formData.phone = phone.value;
-        formData.date = datepicker.value;
+        formData.token = token.value;
 
         return formData;
     }
 
-    function getNearDateStamps(strDate) {
+    function getDateStamps() {
 
         time.disable();
 
-        var loadObj = getLoadObj();
-        loadObj.date = strDate;
+        xhrGET(base_dir + '/time', getLoadObj(), function(stamps) {
+            time.Update(stamps);
+        });
+    }
+    function getNearDateStamps() {
 
-        xhr(base_dir + '/date', loadObj, function(response) {
+        time.disable();
+
+        xhrGET(base_dir + '/date', getLoadObj(), function(response) {
 
             datepicker.value = response.date;
             datepickerI.setDate(new Date(response.date));
@@ -148,9 +147,8 @@ function BookingForm(formId, resId, arDates) {
     }
 
     function submit() {
-        var formData = getFormData();
-
-        xhr(base_dir + '/submit', formData, function(response) {
+        
+        xhrPOST(base_dir + '/submit', getFormData(), function(response) {
 
             if (response == 3) {
                 M.toast({

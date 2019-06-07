@@ -25,7 +25,6 @@ class RestTable extends Model
 	        $tables = SELF::where('size', $arParams['table_size'])->count();
 
 	    	$matches = [
-	            ['confrimed', 1],
 	            ['date', $arParams['date']],
 	            ['table_size', $arParams['table_size']],
 	            ['stamp_end', '>', $arParams['stamp_beg']],
@@ -45,7 +44,6 @@ class RestTable extends Model
 	        $tables = SELF::where('size', $arParams['table_size'])->get(['id'])->pluck('id');
 
 	    	$matches = [
-	            ['confrimed', 1],
 	            ['date', $arParams['date']],
 	            ['table_size', $arParams['table_size']],
 	            ['stamp_end', '>', $arParams['stamp_beg']],

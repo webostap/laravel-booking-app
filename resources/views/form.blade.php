@@ -72,7 +72,7 @@
 
 		    <div id="success" class="success">
 		     <img src="{{ URL::asset('images/cotton-candy.svg') }}" alt="" class="cotton-candy">
-		      <h2>Заказ принят!</h2>
+		      <h2>Стол забронирован!</h2>
 		      <p>Для подтверждения брони Вам позвонит администратор<br> по указанному В Вами номеру</p>
 		    </div>
 		</div>

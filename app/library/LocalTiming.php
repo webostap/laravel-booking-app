@@ -82,7 +82,6 @@ class LocalTiming
         $tables = $tableType->tables()->get(['id'])->pluck('id');
 
         $reserves = $tableType->reserves()
-            ->where('confrimed', 1)
             ->whereDate('date', $date)
             ->get(['table_id', 'stamp_beg', 'stamp_end'])
             ->toArray();

@@ -27,10 +27,9 @@ class LocalTiming
 
 	public static function getDateStamps($date)
 	{
-		date_default_timezone_set('Asia/Vladivostok');
         $today = false;
         $curr_time = date('H:i');
-        $null_time = date('H:i', strtotime(SELF::stampToStr(0)));
+        $null_time = SELF::stampToStr(0);
 
         if ($curr_time >= $null_time && date('Y-m-d') == $date) {
             $curr_stamp = SELF::stamp($curr_time);
@@ -148,7 +147,6 @@ class LocalTiming
 
 	public static function getNearDateOpenStamps($table_size, $duration, $start_date = '')
 	{	
-		date_default_timezone_set('Asia/Vladivostok');
 		$date = date('Y-m-d');
 
 		if ($start_date) $date = $start_date > $date ? $start_date : $date;

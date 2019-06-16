@@ -1,3 +1,5 @@
+"use strict";
+
 class Time {
 	constructor(node) {
 		this.node = node;

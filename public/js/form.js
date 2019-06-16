@@ -1,5 +1,7 @@
 function BookingForm(formId, resId, arDates) {
-    var self = this;
+    
+    "use strict";
+    
     var form = document.getElementById(formId);
     var success = document.getElementById(resId);
     var button = form.querySelector('button[type=submit]');

@@ -85,6 +85,7 @@
 	<script src="{{ URL::asset('js/form.js') }}"></script>
 
 	<script type="text/javascript">
+
 		var base_dir = '{{ URL::to('/') }}';
 
 		var arDates = {

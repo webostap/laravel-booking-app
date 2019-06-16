@@ -42,7 +42,7 @@ class AjaxController extends Controller
          $v = Validator::make($request->all(), [
             'name'       => 'required|max:50',
             'phone'      => 'required|size:17',
-            'date'       => 'required',
+            'date'       => 'required|date|date_format:Y-m-d',
             'table_size' => 'required',
             'duration'   => 'required',
             'stamp_beg'  => 'required'

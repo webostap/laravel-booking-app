@@ -9,7 +9,6 @@
 	</head>
 	<body>
 	 <div class="floating-center">
-	  <img class="logo_VL_EDA" src="images/logo-vl-eda.svg" alt="">
 
 		<div class="form-wrapper">
 			<h1>Бронирование стола</h1>

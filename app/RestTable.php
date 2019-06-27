@@ -18,46 +18,4 @@ class RestTable extends Model
         return $this->hasMany('App\Reserve', 'table_id');
     }
 
-	public static function checkFree(array $arParams)
-    {
-    	if ( LocalTiming::checkDateStamps($arParams['date'], $arParams['stamp_beg'], $arParams['stamp_end'])) {
-
-	        $tables = SELF::where('size', $arParams['table_size'])->count();
-
-	    	$matches = [
-	            ['date', $arParams['date']],
-	            ['table_size', $arParams['table_size']],
-	            ['stamp_end', '>', $arParams['stamp_beg']],
-	            ['stamp_beg', '<', $arParams['stamp_end']]
-	        ];
-
-	        $reserves = \App\Reserve::where($matches)->count();
-
-	        return $tables > $reserves;
-
-	    } else return false;
-    }
-	public static function getFree(array $arParams)
-    {
-    	if ( LocalTiming::checkDateStamps($arParams['date'], $arParams['stamp_beg'], $arParams['stamp_end'])) {
-
-	        $tables = SELF::where('size', $arParams['table_size'])->get(['id'])->pluck('id');
-
-	    	$matches = [
-	            ['date', $arParams['date']],
-	            ['table_size', $arParams['table_size']],
-	            ['stamp_end', '>', $arParams['stamp_beg']],
-	            ['stamp_beg', '<', $arParams['stamp_end']]
-	        ];
-
-	        $reserves = \App\Reserve::where($matches)->
-	        	get(['table_id'])->pluck('table_id');
-
-	        $freeTables = $tables->diff($reserves)->flatten();
-
-	        return $freeTables->count() ? $freeTables->toArray() : false;
-
-
-	    } else return false;
-    }
 }

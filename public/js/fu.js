@@ -88,8 +88,10 @@ function xhrGET (request, paramsObj, cb) {
 
   var requestParams = '?';
   for (let key in paramsObj) {
-  	requestParams+= key+'='+paramsObj[key]+'&';
+  	if (paramsObj[key])
+  		requestParams+= key+'='+paramsObj[key]+'&';
   }
+  requestParams = requestParams.slice(0,-1);
 
   xhr.open('GET', request+requestParams);
   xhr.send();
@@ -110,6 +112,7 @@ function xhrPOST (request, paramsObj, cb) {
   xhr.open('POST', request);
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.setRequestHeader("X-CSRF-Token", paramsObj['token']);
+  delete paramsObj['token'];
   xhr.send(JSON.stringify(paramsObj));
 
   xhr.onreadystatechange = function () {

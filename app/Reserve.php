@@ -9,6 +9,8 @@ use \App\library\LocalTiming;
 class Reserve extends Model
 {
 
+    protected $fillable = ['name','phone','table_size','date','stamp_beg','stamp_end'];
+
     public function table()
     {
         return $this->belongsTo('App\RestTable', 'table_id');
@@ -19,38 +21,48 @@ class Reserve extends Model
         return $this->belongsTo('App\TableType', 'table_size', 'size');
     }
 
+
+    public function Crosses() {
+        $matches = [
+            ['date', $this->date],
+            ['table_size', $this->table_size],
+            ['stamp_end', '>', $this->stamp_beg],
+            ['stamp_beg', '<', $this->stamp_end]
+        ];
+
+        return self::where($matches)->get(['table_id'])->pluck('table_id');
+    }
+
+    public function AvailableTables() {
+        if ( !LocalTiming::checkDateStamps($this->date, $this->stamp_beg, $this->stamp_end))
+            return false;
+
+        $tables = $this->tableType->tables()->get(['id'])->pluck('id');
+
+        $freeTables = $tables->diff($this->Crosses())->flatten();
+
+        return $freeTables->count() ? $freeTables->toArray() : false;
+    }
+
+
     public static function Ask (array $arParams) {
 
-        if (\App\RestTable::checkFree($arParams)) {
+        $reserve = new Reserve($arParams);
+        $reserve->time_beg = LocalTiming::stampToStr($arParams['stamp_beg']);
+        $reserve->time_end = LocalTiming::stampToStr($arParams['stamp_end']);
 
-            $reserve = new Reserve;
-
-            $reserve->name = $arParams['name'];
-            $reserve->phone = $arParams['phone'];
-            $reserve->table_size = intval($arParams['table_size']);
-            $reserve->date = $arParams['date'];
-            $reserve->stamp_beg = $arParams['stamp_beg'];
-            $reserve->stamp_end = $arParams['stamp_end'];
-            $reserve->time_beg = LocalTiming::stampToStr($arParams['stamp_beg']);
-            $reserve->time_end = LocalTiming::stampToStr($arParams['stamp_end']);
-
+        if ($reserve->AvailableTables()) {
             if ($reserve->save()) 
-            	return $reserve->id;
+                return $reserve->id;
         }
+
         return false;
     }
     public static function Confrim ($reserveId) {
 
     	$reserve = Reserve::find($reserveId);
-
-    	$arParams = [
-	        'table_size'=> $reserve->table_size,
-	        'date'      => $reserve->date,
-	        'stamp_beg' => $reserve->stamp_beg,
-	        'stamp_end' => $reserve->stamp_end
-        ];
-
-    	$freeTables = \App\RestTable::getFree($arParams);
+        
+    	$freeTables = $reserve->AvailableTables();
 
         if ($freeTables) {
 

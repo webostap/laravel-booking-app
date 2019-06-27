@@ -29,47 +29,35 @@ class LocalTiming
 	{
         $today = false;
         $curr_time = date('H:i');
-        $null_time = SELF::stampToStr(0);
+        $null_time = self::stampToStr(0);
 
         if ($curr_time >= $null_time && date('Y-m-d') == $date) {
-            $curr_stamp = SELF::stamp($curr_time);
+            $curr_stamp = self::stamp($curr_time);
             $today = true;
         }
 
-		$ret = [];
+		$result = [];
+        $day = \App\SpecialDay::whereDate('date', $date)->first();
+        if (!$day) $day = \App\WeekDay::getDayByDate($date);
 
-		$specialDay = \App\SpecialDay::where('date', $date)->first();
-        if ($specialDay) {
+        if ($day->day_off)
+            return false;
 
-            if ($specialDay->day_off)
-                return false;
-
-            else {
-            	$ret[0] = $specialDay->stamp_beg;
-            	$ret[1] = $specialDay->stamp_end;
-            }
-        }
         else {
-            $weekDay = \App\WeekDay::getDayByDate($date);
-
-            if ($weekDay->day_off)
-                return false;
-
-            else {
-            	$ret[0] = $weekDay->stamp_beg;
-            	$ret[1] = $weekDay->stamp_end;
-            }
-        }
-        if ($today) {
-            $ret[0] = $curr_stamp > $ret[0] ? $curr_stamp : ret[0];
+        	$result[0] = $day->stamp_beg;
+        	$result[1] = $day->stamp_end;
         }
         
-        return $ret;
+        if ($today) {
+            $result[0] = $curr_stamp > $result[0] ? $curr_stamp : $result[0];
+        }
+        
+        return $result;
 	}
 
 	public static function checkDateStamps($date, $stamp_beg, $stamp_end)
 	{	
-		$dateStamps = SELF::getDateStamps($date);
+		$dateStamps = self::getDateStamps($date);
 		if (!$dateStamps) return false;
 		return $stamp_beg >= $dateStamps[0] && $stamp_end <= $dateStamps[1];
 	}
@@ -124,9 +112,9 @@ class LocalTiming
 	public static function getDateOpenStamps($table_size, $duration, $date)
 	{	
 
-        $dateStamps = SELF::getDateStamps($date);
+        $dateStamps = self::getDateStamps($date);
         if(!$dateStamps) return [];
-        $closedStamps = SELF::getDateClosedStamps($date, $table_size);
+        $closedStamps = self::getDateClosedStamps($date, $table_size);
         $openStamps = [];
 
 
@@ -154,7 +142,7 @@ class LocalTiming
         $openStamps = [];
 
 		for ($i=1; $i < 180; $i++) { 
-			$openStamps = SELF::getDateOpenStamps($table_size, $duration, $date);
+			$openStamps = self::getDateOpenStamps($table_size, $duration, $date);
 			if (!empty($openStamps)) return [
 	        	'date'=> $date,
 	        	'stamps' => $openStamps

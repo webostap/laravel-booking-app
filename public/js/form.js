@@ -28,17 +28,17 @@ function BookingForm(formId, resId, arDates) {
         minDate: new Date(),
         setDefaultDate: true,
         format: "yyyy-mm-dd",
-        disableDayFn: function(d) {
+        disableDayFn(d) {
             if (arDates.specialDays.includes(d.yyyymmdd('-'))) {
                 return arDates.freeDates.includes(d.yyyymmdd('-'));
             } else {
                 return (arDates.freeDays.includes(d.getDay7()));
             }
         },
-        onOpen: function() {
+        onOpen() {
             lastDate = datepicker.value;
         },
-        onClose: function() {
+        onClose() {
             if (datepicker.value && datepicker.value != lastDate) {
                 sDate.value = prettyDate(datepicker.value);
                 dateLabel.classList.add('active');

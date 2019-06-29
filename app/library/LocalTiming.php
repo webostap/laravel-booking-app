@@ -30,27 +30,23 @@ class LocalTiming
         $today = false;
         $curr_time = date('H:i');
         $null_time = self::stampToStr(0);
+        $curr_stamp = 0;
+        $result = [];
 
         if ($curr_time >= $null_time && date('Y-m-d') == $date) {
             $curr_stamp = self::stamp($curr_time);
             $today = true;
         }
 
-		$result = [];
         $day = \App\SpecialDay::whereDate('date', $date)->first();
         if (!$day) $day = \App\WeekDay::getDayByDate($date);
 
-        if ($day->day_off)
-            return false;
+        if ($day->day_off) return false;
 
-        else {
-        	$result[0] = $day->stamp_beg;
-        	$result[1] = $day->stamp_end;
-        }
+        $result = [$day->stamp_beg, $day->stamp_end];
         
-        if ($today) {
-            $result[0] = $curr_stamp > $result[0] ? $curr_stamp : $result[0];
-        }
+        if ($today && $curr_stamp > $result[0])
+            $result[0] = $curr_stamp;
         
         return $result;
 	}
@@ -78,34 +74,33 @@ class LocalTiming
         $closedStamps = [];
 
         if ($tables->count() == 1) {
-        	foreach ($reserves as $tableReserve) {
-	            for ($stamp = $tableReserve['stamp_beg']; $stamp < $tableReserve['stamp_end']; $stamp++) {
-	                $reservedStamps[] = $stamp;
-	            }
-	        }
+        	foreach ($reserves as $reserve)
+                for ($stamp = $reserve['stamp_beg']; $stamp < $reserve['stamp_end']; $stamp++)
+                    $reservedStamps[] = $stamp;
+
 	        return $reservedStamps;
         }
 
 
-        foreach ($reserves as $tableReserve) {
-            for ($stamp = $tableReserve['stamp_beg']; $stamp < $tableReserve['stamp_end']; $stamp++) {
+        foreach ($reserves as $reserve) 
+        {
+            for ($stamp = $reserve['stamp_beg']; $stamp < $reserve['stamp_end']; $stamp++) {
 
-                if ( in_array($stamp, $reservedStamps) ) {
-                    if ( isset($crossedStamps[$stamp]) ) {
-                        $crossedStamps[$stamp]++;
-                    }
-                    else $crossedStamps[$stamp] = 2;
-                }
-                else $reservedStamps[] = $stamp;
+                if ( !in_array($stamp, $reservedStamps) ) 
+                    $reservedStamps[] = $stamp;
+
+                else if ( !isset($crossedStamps[$stamp]) )
+                    $crossedStamps[$stamp] = 2;
+
+                else $crossedStamps[$stamp]++;
 
             }
         }
 
-        foreach ($crossedStamps as $stamp => $count) {
-            if ($count == $tables->count()) {
+        foreach ($crossedStamps as $stamp => $count)
+            if ($count == $tables->count())
                 $closedStamps[] = $stamp;
-            }
-        }
+
 
         return $closedStamps;
 	}
@@ -137,7 +132,7 @@ class LocalTiming
 	{	
 		$date = date('Y-m-d');
 
-		if ($start_date) $date = $start_date > $date ? $start_date : $date;
+		if ($start_date && $start_date > $date) $date = $start_date;
 
         $openStamps = [];
 
@@ -148,12 +143,9 @@ class LocalTiming
 	        	'stamps' => $openStamps
 	        ];
 
-	        if ($i==1)
-	        {
-	        	if ($start_date) {
-	        		$date = date('Y-m-d');
-	        		continue;
-	        	}
+	        if ($i==1 && $start_date) {
+        		$date = date('Y-m-d');
+        		continue;
 	        }
 
         	$date = date('Y-m-d', strtotime($date. ' + 1 days'));

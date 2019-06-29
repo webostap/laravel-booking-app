@@ -11,6 +11,14 @@ class Reserve extends Model
 
     protected $fillable = ['name','phone','table_size','date','stamp_beg','stamp_end'];
 
+    public function __construct(array $attributes = array())
+    {
+        parent::__construct($attributes);
+
+        $this->time_beg = LocalTiming::stampToStr($this->stamp_beg);
+        $this->time_end = LocalTiming::stampToStr($this->stamp_end);
+    }
+
     public function table()
     {
         return $this->belongsTo('App\RestTable', 'table_id');
@@ -48,13 +56,10 @@ class Reserve extends Model
     public static function Ask (array $arParams) {
 
         $reserve = new Reserve($arParams);
-        $reserve->time_beg = LocalTiming::stampToStr($arParams['stamp_beg']);
-        $reserve->time_end = LocalTiming::stampToStr($arParams['stamp_end']);
 
-        if ($reserve->AvailableTables()) {
+        if ($reserve->AvailableTables())
             if ($reserve->save()) 
                 return $reserve->id;
-        }
 
         return false;
     }

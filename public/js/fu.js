@@ -68,16 +68,24 @@ Date.prototype.yyyymmdd = function(div = '-') {
           (dd>9 ? '' : '0') + dd
          ].join(div);
 };
+
 function prettyDate(str) {
-	var now = new Date();
-    var today = new Date(now.yyyymmdd('-'));
     var selectedDate = new Date(str);
-	if(today.valueOf()==selectedDate.valueOf()) {
-	    return 'Сегодня ('+selectedDate.getDate()+' '+i18nTimesRus.monthsCase[selectedDate.getMonth()]+')';
-	}
-	else {
-	    return i18nTimesRus.weekdays[selectedDate.getDay7()-1]+' ('+selectedDate.getDate()+' '+i18nTimesRus.monthsCase[selectedDate.getMonth()]+')';
-	}
+    var today = new Date();
+	var tomorrow = new Date();
+	tomorrow.setDate(today.getDate()+1);
+
+    var dateInfo = i18nTimesRus.weekdays[selectedDate.getDay7()-1];
+    var dateStr = '('+selectedDate.getDate()+' '+i18nTimesRus.monthsCase[selectedDate.getMonth()]+')';
+
+
+	if(selectedDate.toDateString() == today.toDateString())
+		dateInfo = 'Сегодня';
+
+	if(selectedDate.toDateString() == tomorrow.toDateString())
+		dateInfo = 'Завтра';
+	    
+	return dateInfo+' '+dateStr;
 };
 
 

@@ -22,12 +22,12 @@ class EditWeekDayController extends Controller
 
 		$weekDay->stamp_beg = intval($request->stamp_beg);
 		$weekDay->stamp_end = intval($request->stamp_end);
-		$weekDay->time_beg = \App\library\LocalTiming::stampToStr($request->stamp_beg);
-		$weekDay->time_end = \App\library\LocalTiming::stampToStr($request->stamp_end);
 		$weekDay->day_off = $request->day_off ? 1 : NULL;
 
-		$weekDay->save();
+		$saved = $weekDay->save();
 
-        return redirect()->back();
+		if($saved) return redirect()->back();
+		else return redirect()->back()->withErrors('Запись не сохранена! Обратитесь к администратору');
+
     }
 }

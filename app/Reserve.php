@@ -11,13 +11,21 @@ class Reserve extends Model
 
     protected $fillable = ['name','phone','table_size','date','stamp_beg','stamp_end'];
 
-    public function __construct(array $attributes = array())
+    public function __construct ($attributes = array())
     {
         parent::__construct($attributes);
-
+        
         $this->time_beg = LocalTiming::stampToStr($this->stamp_beg);
         $this->time_end = LocalTiming::stampToStr($this->stamp_end);
+
     }
+
+
+    public function Ask () 
+    {
+        return $this->CheckFree() ? $this->save() : false;
+    }
+
 
     public function table()
     {
@@ -38,44 +46,46 @@ class Reserve extends Model
             ['stamp_beg', '<', $this->stamp_end]
         ];
 
-        return self::where($matches)->get(['table_id'])->pluck('table_id');
+        return self::where($matches);//->get();
     }
 
-    public function AvailableTables() {
-        if ( !LocalTiming::checkDateStamps($this->date, $this->stamp_beg, $this->stamp_end))
-            return false;
+    public function CheckTime() {
+        return LocalTiming::checkDateStamps($this->date, $this->stamp_beg, $this->stamp_end);
+    }
 
-        $tables = $this->tableType->tables()->get(['id'])->pluck('id');
+    public function CheckFree() {
 
-        $freeTables = $tables->diff($this->Crosses())->flatten();
+        if ( !$this->CheckTime() ) return false;
 
-        return $freeTables->count() ? $freeTables->toArray() : false;
+        return $this->tableType->tables()->count() > $this->Crosses()->count();
+
     }
 
 
-    public static function Ask (array $arParams) {
+    public function FreeTables() {
 
-        $reserve = new Reserve($arParams);
+        if ( !$this->CheckTime() ) return [];
 
-        if ($reserve->AvailableTables())
-            if ($reserve->save()) 
-                return $reserve->id;
+        $allTables = $this->tableType->tables()->get(['id'])->pluck('id');
 
-        return false;
+        $reservedTables = $this->Crosses()->get(['table_id'])->pluck('table_id');
+
+        return $allTables->diff($reservedTables)->toArray();
+
     }
+
+
     public static function Confrim ($reserveId) {
 
     	$reserve = Reserve::find($reserveId);
         
-    	$freeTables = $reserve->AvailableTables();
+    	$freeTables = $reserve->FreeTables();
+        if (empty($freeTables)) return false;
 
-        if ($freeTables) {
+        $reserve->table_id = $freeTables[array_rand($freeTables)];
+        $reserve->confrimed = 1;
 
-            $reserve->table_id = $freeTables[array_rand($freeTables)];
-            $reserve->confrimed = 1;
-
-            return $reserve->save();
-        }
-        else return false;
+        return $reserve->save();
     }
+
 }

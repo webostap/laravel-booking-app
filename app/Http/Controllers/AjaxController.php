@@ -48,8 +48,7 @@ class AjaxController extends Controller
             'stamp_beg'  => 'required'
         ]);
 
-        if ($v->fails())
-            return 3;
+        if ($v->fails()) return 3;
 
         $arParams = [
             'name'       => $request->name,
@@ -61,6 +60,7 @@ class AjaxController extends Controller
             'stamp_end'  => $request->stamp_beg + $request->duration
         ];
 
-        return \App\Reserve::Ask($arParams) ? 1 : 2;
+        $reserve = new \App\Reserve($arParams);
+        return $reserve->Ask() ? 1 : 2;
     }
 }

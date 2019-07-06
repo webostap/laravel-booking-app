@@ -29,14 +29,11 @@ class EditSpecialDayController extends Controller
         $specialDay->date = ($request->date);
         $specialDay->stamp_beg = intval($request->stamp_beg);
         $specialDay->stamp_end = intval($request->stamp_end);
-        $specialDay->time_beg = LocalTiming::stampToStr($request->stamp_beg);
-        $specialDay->time_end = LocalTiming::stampToStr($request->stamp_end);
         $specialDay->day_off = $request->day_off ? 1 : NULL;
 
-        $specialDay->save();
-
-
-        return redirect()->back();
+        $saved = $specialDay->save();
+        if($saved) return redirect()->back();
+        else return redirect()->back()->withErrors('Запись не сохранена! Обратитесь к администратору');
     }
 
     public function update(Request $request, $id)
@@ -45,10 +42,8 @@ class EditSpecialDayController extends Controller
             'date'       => 'required'
         ]);
 
-        if ($v->fails())
-        {
-            return redirect()->back()->withErrors($v->errors());
-        }
+        if ($v->fails()) return redirect()->back()->withErrors($v->errors());
+
         if ($request->stamp_beg >= $request->stamp_end)
             return redirect()->back()->withErrors('Конец дня должен быть позднее его начала!');
 
@@ -58,19 +53,17 @@ class EditSpecialDayController extends Controller
         $specialDay->date = ($request->date);
         $specialDay->stamp_beg = intval($request->stamp_beg);
         $specialDay->stamp_end = intval($request->stamp_end);
-        $specialDay->time_beg = LocalTiming::stampToStr($request->stamp_beg);
-        $specialDay->time_end = LocalTiming::stampToStr($request->stamp_end);
         $specialDay->day_off = $request->day_off ? 1 : NULL;
 
-        $specialDay->save();
-
-
-        return redirect()->back();
+        $saved = $specialDay->save();
+        if($saved) return redirect()->back();
+        else return redirect()->back()->withErrors('Запись не сохранена! Обратитесь к администратору');
 
     }
 
     public function destroy ($id) {
-        SpecialDay::destroy($id);
-        return redirect()->back();
+        $deleted = SpecialDay::destroy($id);
+        if ($deleted) return redirect()->back();
+        else return redirect()->back()->withErrors('Дата не удалена! Обратитесь к администратору');
     }
 }

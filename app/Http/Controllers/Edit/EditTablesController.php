@@ -14,14 +14,14 @@ class EditTablesController extends Controller
     }
     public function store(Request $request)
     {   
-        if(!$request->size)
-            return redirect()->back()->withErrors('Столу нужен размер, милорд');
+        if(!$request->size) return redirect()->back()->withErrors('Столу нужен размер, милорд');
 
         $table = new RestTable;
         $table->size = $request->size;
-        $table->save();
 
-        return redirect()->back();
+        $saved = $table->save();
+        if($saved) return redirect()->back();
+        else return redirect()->back()->withErrors('Запись не сохранена! Обратитесь к администратору');
 
     }
 
@@ -29,19 +29,19 @@ class EditTablesController extends Controller
     {
         $table = RestTable::find($id);
 
-        date_default_timezone_set('Asia/Vladivostok');
         $nowStamp = \App\library\LocalTiming::stamp(date('H:i'));
 
         $reserved_count = $table->reserves()
             ->whereDate('date', '>', date('Y-m-d'))
             ->orWhere([['date', date('Y-m-d')], ['stamp_beg', '>', $nowStamp]])
             ->count();
-        if ($reserved_count) {
-            return redirect()->back()->withErrors('Данный стол имеет предстоящие брони');
-        }
+
+        if ($reserved_count) return redirect()->back()->withErrors('Данный стол имеет предстоящие брони');
+
         else {
-            $table->delete();
-            return redirect()->back();
+            $deleted = $table->delete();
+            if ($deleted) return redirect()->back();
+            else return redirect()->back()->withErrors('Стол не удалён! Обратитесь к администратору');
         }
     }
 }

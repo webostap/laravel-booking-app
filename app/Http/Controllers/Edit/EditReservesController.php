@@ -14,11 +14,12 @@ class EditReservesController extends Controller
 	}
     public function update ($id) {
     	$confrimed = Reserve::Confrim($id);
-    	if ($confrimed) return redirect('admin');
+    	if ($confrimed) return redirect()->back();
         else return redirect()->back()->withErrors('В указанное время нет доступных столов данного размера');
     }
     public function destroy ($id) {
-		Reserve::destroy($id);
-		return redirect()->back();
+		$deleted = Reserve::destroy($id);
+        if ($deleted) return redirect()->back();
+        else return redirect()->back()->withErrors('Заказ не удалён! Обратитесь к администратору');
     }
 }
